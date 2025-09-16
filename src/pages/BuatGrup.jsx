@@ -4,6 +4,7 @@ import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaPlus, FaSave, FaArrowLeft } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const BuatGrup = () => {
   const [namaGrup, setNamaGrup] = useState("");
@@ -22,7 +23,15 @@ const BuatGrup = () => {
 
   const handleSimpan = async () => {
     if (!namaGrup) {
-      alert("Nama grup wajib diisi!");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "warning",
+        title: "Nama grup wajib diisi!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
       return;
     }
 
@@ -51,11 +60,27 @@ const BuatGrup = () => {
         });
       }
 
-      alert("✅ Grup & Tim berhasil disimpan!");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Grup & Tim berhasil disimpan 🎉",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
       navigate("/daftar-grup");
     } catch (err) {
       console.error("Error:", err);
-      alert("❌ Gagal menyimpan data.");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Gagal menyimpan data!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
     }
   };
 
