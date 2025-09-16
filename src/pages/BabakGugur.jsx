@@ -9,10 +9,12 @@ import {
   FaCrown,
   FaRegClock,
   FaImage,
+  FaArrowLeft,
 } from "react-icons/fa";
 import html2canvas from "html2canvas-pro";
 import Swal from "sweetalert2";
 import { FaScreenpal } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const BabakGugur = () => {
   const [teams, setTeams] = useState([]);
@@ -414,11 +416,20 @@ const BabakGugur = () => {
     });
   };
 
+  const navigate = useNavigate();
+
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 p-6 text-white flex flex-col items-center"
       id="knockout-area"
     >
+      {/* 🔙 Tombol kembali */}
+      <button
+        onClick={() => navigate("/")}
+        className="absolute top-4 left-4 flex items-center gap-2 bg-white cursor-pointer hover:bg-blue-900 text-blue-900 hover:text-white px-4 py-2 rounded-lg shadow-md transition"
+      >
+        <FaArrowLeft />
+      </button>
       <h1 className="text-4xl font-extrabold text-center mb-12 tracking-wide">
         BABAK KNOCKOUT <span className="text-yellow-400">PALAAN CUP 2025</span>
       </h1>
