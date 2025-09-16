@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaPlusCircle, FaListUl } from "react-icons/fa";
+import { FaPlusCircle, FaListUl, FaSitemap } from "react-icons/fa";
 
 function Home() {
   return (
@@ -29,6 +29,13 @@ function Home() {
         >
           <FaListUl className="text-yellow-300 text-2xl" />
           Daftar Grup
+        </Link>
+
+        <Link
+          to="/babak-gugur"
+          className="flex items-center justify-center gap-3 px-10 py-5 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg text-xl font-semibold text-white transition transform hover:scale-105 hover:shadow-2xl hover:bg-white/20"
+        >
+          <FaSitemap className="text-2xl" /> Babak Gugur
         </Link>
       </div>
     </div>

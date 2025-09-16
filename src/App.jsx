@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import BuatGrup from "./pages/BuatGrup";
 import DaftarGrup from "./pages/DaftarGrup";
 import Klasemen from "./pages/Klasemen";
+import BabakGugur from "./pages/BabakGugur";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/buat-grup" element={<BuatGrup />} />
         <Route path="/daftar-grup" element={<DaftarGrup />} />
         <Route path="/klasemen/:groupId" element={<Klasemen />} />
+        <Route path="/babak-gugur" element={<BabakGugur />} />
       </Routes>
     </Router>
   );
