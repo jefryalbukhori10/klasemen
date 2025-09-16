@@ -249,6 +249,8 @@ import {
   doc,
   updateDoc,
   getDoc,
+  addDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import {
@@ -258,8 +260,11 @@ import {
   FaCamera,
   FaFileImage,
   FaArrowLeft,
+  FaPlus,
+  FaTrash,
 } from "react-icons/fa";
 import html2canvas from "html2canvas-pro";
+import Swal from "sweetalert2";
 
 const Klasemen = () => {
   const { groupId } = useParams();
@@ -267,6 +272,8 @@ const Klasemen = () => {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [formData, setFormData] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newTeamName, setNewTeamName] = useState("");
   const [groupName, setGroupName] = useState("");
   const tableRef = useRef(null); // ⬅️ ref untuk screenshot
 
@@ -360,6 +367,58 @@ const Klasemen = () => {
     link.click();
   };
 
+  const handleAddTeam = async () => {
+    if (!newTeamName.trim()) {
+      Swal.fire("⚠️ Nama tim wajib diisi!", "", "warning");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "tim"), {
+        idGrup: groupId,
+        nama: newTeamName,
+        main: 0,
+        menang: 0,
+        seri: 0,
+        kalah: 0,
+        gm: 0,
+        gk: 0,
+        poin: 0,
+        createdAt: new Date(),
+      });
+
+      Swal.fire("✅ Tim berhasil ditambahkan!", "", "success");
+      setShowAddModal(false);
+      setNewTeamName("");
+      window.location.reload();
+    } catch (err) {
+      Swal.fire("❌ Gagal menambah tim!", "", "error");
+      console.error(err);
+    }
+  };
+
+  const handleDeleteTeam = async (teamId, teamName) => {
+    Swal.fire({
+      title: `Hapus tim ${teamName}?`,
+      text: "Data tidak bisa dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteDoc(doc(db, "tim", teamId));
+          Swal.fire("🗑️ Tim dihapus!", "", "success");
+          window.location.reload();
+        } catch (err) {
+          Swal.fire("❌ Gagal menghapus tim!", "", "error");
+          console.error(err);
+        }
+      }
+    });
+  };
+
   const navigate = useNavigate();
 
   return (
@@ -385,13 +444,21 @@ const Klasemen = () => {
           Klasemen {groupName}
         </h2>
 
-        {/* Tombol Screenshot */}
-        <button
-          onClick={handleScreenshot}
-          className="mt-6 no-screenshot flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-700 hover:bg-blue-800 cursor-pointer text-white font-bold shadow-lg transition"
-        >
-          <FaDownload /> Download Klasemen
-        </button>
+        <div className="flex justify-between items-center mb-4 no-screenshot">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-blue-800 text-blue-800 hover:text-white font-bold shadow-lg transition cursor-pointer"
+          >
+            <FaPlus /> Tambah Tim
+          </button>
+
+          <button
+            onClick={handleScreenshot}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-800 hover:bg-white hover:text-blue-800 cursor-pointer text-white font-bold shadow-lg transition"
+          >
+            <FaDownload /> Download Klasemen
+          </button>
+        </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-center border-separate border-spacing-y-3">
@@ -428,12 +495,18 @@ const Klasemen = () => {
                   <td className="py-3 px-2">{team.gk || 0}</td>
                   <td className="py-3 px-2">{team.sg || 0}</td>
                   <td className="py-3 px-2 font-bold">{team.poin || 0}</td>
-                  <td className="py-3 px-2 flex justify-center no-screenshot">
+                  <td className="py-3 px-2 flex justify-center gap-2 no-screenshot">
                     <button
                       onClick={() => handleEditClick(team)}
                       className="bg-yellow-400 text-blue-900 px-3 py-2 rounded-lg hover:bg-yellow-300 transition flex items-center gap-1 cursor-pointer"
                     >
-                      <FaEdit /> Edit
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTeam(team.id, team.nama)}
+                      className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-400 transition flex items-center gap-1 cursor-pointer"
+                    >
+                      <FaTrash />
                     </button>
                   </td>
                 </tr>
@@ -494,6 +567,43 @@ const Klasemen = () => {
               <button
                 onClick={handleSave}
                 className="px-6 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-semibold shadow-md transition cursor-pointer"
+              >
+                💾 Simpan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-white/95 rounded-2xl shadow-2xl p-8 w-full max-w-md relative">
+            <button
+              onClick={() => setShowAddModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition cursor-pointer"
+            >
+              <FaTimes size={22} />
+            </button>
+            <h2 className="text-2xl font-extrabold text-center mb-6 text-blue-800">
+              <FaPlus /> Tambah Tim Baru
+            </h2>
+            <input
+              type="text"
+              placeholder="Nama Tim"
+              value={newTeamName}
+              onChange={(e) => setNewTeamName(e.target.value)}
+              className="w-full p-3 mb-6 rounded-xl border border-gray-300 bg-white/80 shadow-sm focus:ring-2 focus:ring-green-400 outline-none"
+            />
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="px-6 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold transition cursor-pointer"
+              >
+                ❌ Batal
+              </button>
+              <button
+                onClick={handleAddTeam}
+                className="px-6 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md transition cursor-pointer"
               >
                 💾 Simpan
               </button>
