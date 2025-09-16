@@ -276,6 +276,25 @@ const Klasemen = () => {
   const [newTeamName, setNewTeamName] = useState("");
   const [groupName, setGroupName] = useState("");
   const tableRef = useRef(null); // ⬅️ ref untuk screenshot
+  // Tambahkan state baru
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [editName, setEditName] = useState("");
+
+  // Fungsi buka modal edit nama
+  const handleEditNameClick = (team) => {
+    setSelectedTeam(team);
+    setEditName(team.nama);
+    setShowNameModal(true);
+  };
+
+  // Simpan perubahan nama
+  const handleSaveName = async () => {
+    if (!selectedTeam) return;
+    const teamRef = doc(db, "tim", selectedTeam.id);
+    await updateDoc(teamRef, { nama: editName });
+    setShowNameModal(false);
+    window.location.reload();
+  };
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -484,9 +503,17 @@ const Klasemen = () => {
                   className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-md"
                 >
                   <td>{index + 1}</td>
-                  <td className="py-3 px-2 text-left font-semibold">
+                  <td className="py-3 px-2 text-left font-semibold flex items-center gap-2">
                     {team.nama}
+                    <button
+                      onClick={() => handleEditNameClick(team)}
+                      className="text-yellow-400 hover:text-yellow-300 cursor-pointer"
+                      title="Edit Nama Tim"
+                    >
+                      <FaEdit size={14} />
+                    </button>
                   </td>
+
                   <td className="py-3 px-2">{team.main || 0}</td>
                   <td className="py-3 px-2">{team.menang || 0}</td>
                   <td className="py-3 px-2">{team.seri || 0}</td>
@@ -604,6 +631,42 @@ const Klasemen = () => {
               <button
                 onClick={handleAddTeam}
                 className="px-6 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md transition cursor-pointer"
+              >
+                💾 Simpan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showNameModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-white/95 rounded-2xl shadow-2xl p-8 w-full max-w-md relative">
+            <button
+              onClick={() => setShowNameModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition cursor-pointer"
+            >
+              <FaTimes size={22} />
+            </button>
+            <h2 className="text-2xl font-extrabold text-center mb-6 text-blue-800">
+              ✏️ Edit Nama Tim
+            </h2>
+            <input
+              type="text"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              className="w-full p-3 mb-6 rounded-xl border border-gray-300 bg-white/80 shadow-sm focus:ring-2 focus:ring-yellow-400 outline-none"
+            />
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setShowNameModal(false)}
+                className="px-6 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold transition cursor-pointer"
+              >
+                ❌ Batal
+              </button>
+              <button
+                onClick={handleSaveName}
+                className="px-6 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-semibold shadow-md transition cursor-pointer"
               >
                 💾 Simpan
               </button>
