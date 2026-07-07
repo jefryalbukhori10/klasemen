@@ -1,16 +1,28 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@keyframes gradient-x {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 10s ease infinite;
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F6F3EA;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(15, 61, 46, 0.08) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.font-display {
+  font-family: 'Rajdhani', sans-serif;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
