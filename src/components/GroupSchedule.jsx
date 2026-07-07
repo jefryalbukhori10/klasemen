@@ -46,7 +46,7 @@ export default function GroupSchedule({ groups, matches, canEdit }) {
           .sort((a, b) => (a.matchNumber ?? 0) - (b.matchNumber ?? 0))
         const teams = groups[g].teams ?? []
         return (
-          <div key={g} className="rounded-2xl border border-pitch/10 bg-white p-4">
+          <div key={g} className="min-w-0 rounded-2xl border border-pitch/10 bg-white p-4">
             <h3 className="font-display text-lg font-bold text-pitch">
               {GROUP_LABELS[g] ?? `Grup ${g}`} &middot; Jadwal &amp; Skor
             </h3>

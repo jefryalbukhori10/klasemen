@@ -138,7 +138,7 @@ export default function TeamManager({ groups, matches, settings, knockoutStarted
         {groupKeys.map((g) => {
           const teams = groups[g].teams ?? []
           return (
-            <div key={g} className="rounded-2xl border border-pitch/10 bg-white p-4">
+            <div key={g} className="min-w-0 rounded-2xl border border-pitch/10 bg-white p-4">
               <h3 className="font-display text-lg font-bold text-pitch">{GROUP_LABELS[g] ?? `Grup ${g}`}</h3>
               <ul className="mt-3 space-y-2">
                 {teams.map((t) => (
