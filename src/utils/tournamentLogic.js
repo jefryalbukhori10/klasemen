@@ -40,7 +40,10 @@ function headToHeadStats(ids, matches) {
     s1.ga += m.awayScore
     s2.gf += m.awayScore
     s2.ga += m.homeScore
-    if (m.homeScore > m.awayScore) s1.pts += 3
+    if (m.sanction?.active) {
+      s1.pts += m.sanction.homePoints ?? 0
+      s2.pts += m.sanction.awayPoints ?? 0
+    } else if (m.homeScore > m.awayScore) s1.pts += 3
     else if (m.homeScore < m.awayScore) s2.pts += 3
     else {
       s1.pts += 1
@@ -111,17 +114,31 @@ export function computeGroupStandings(teams, matches, criteria) {
     s1.ga += m.awayScore
     s2.gf += m.awayScore
     s2.ga += m.homeScore
+    // Win/draw/lose is always based on the actual score played on the
+    // pitch (for transparency of match history), even if a disciplinary
+    // sanction later overrides the points awarded.
     if (m.homeScore > m.awayScore) {
       s1.win++
-      s1.pts += 3
       s2.lose++
     } else if (m.homeScore < m.awayScore) {
       s2.win++
-      s2.pts += 3
       s1.lose++
     } else {
       s1.draw++
       s2.draw++
+    }
+
+    if (m.sanction?.active) {
+      // Panpel/committee manually overrides the points for this match
+      // (e.g. disqualification for fielding an ineligible player) while
+      // the goals scored still count normally (handled above).
+      s1.pts += m.sanction.homePoints ?? 0
+      s2.pts += m.sanction.awayPoints ?? 0
+    } else if (m.homeScore > m.awayScore) {
+      s1.pts += 3
+    } else if (m.homeScore < m.awayScore) {
+      s2.pts += 3
+    } else {
       s1.pts += 1
       s2.pts += 1
     }

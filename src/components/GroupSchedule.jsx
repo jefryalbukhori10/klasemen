@@ -1,5 +1,6 @@
 import ScoreInput from './ScoreInput'
 import MatchEvents from './MatchEvents'
+import MatchSanction from './MatchSanction'
 import { updateMatchScores, updateMatchField } from '../services/firestoreApi'
 
 const GROUP_LABELS = { A: 'Grup A', B: 'Grup B', C: 'Grup C' }
@@ -120,6 +121,13 @@ export default function GroupSchedule({ groups, matches, canEdit }) {
                       awayTeam={{ id: m.away, name: teamName(teams, m.away) }}
                       goals={m.goals}
                       cards={m.cards}
+                      canEdit={canEdit}
+                      onSave={(field, value) => updateMatchField(m._docId, field, value)}
+                    />
+                    <MatchSanction
+                      homeTeam={{ id: m.home, name: teamName(teams, m.home) }}
+                      awayTeam={{ id: m.away, name: teamName(teams, m.away) }}
+                      sanction={m.sanction}
                       canEdit={canEdit}
                       onSave={(field, value) => updateMatchField(m._docId, field, value)}
                     />
