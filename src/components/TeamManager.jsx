@@ -81,6 +81,13 @@ export default function TeamManager({ groups, matches, settings, knockoutStarted
       await saveSettings({ sortRule: ['points', ...next] })
     })
 
+  const durationMinutes = settings.matchDurationMinutes ?? 90
+  const updateDuration = (value) =>
+    withBusy(async () => {
+      const n = Math.max(1, parseInt(value, 10) || 90)
+      await saveSettings({ matchDurationMinutes: n })
+    })
+
   return (
     <div className="space-y-8">
       {!canEdit && (
@@ -125,6 +132,25 @@ export default function TeamManager({ groups, matches, settings, knockoutStarted
             </li>
           ))}
         </ol>
+      </div>
+
+      <div className="rounded-2xl border border-pitch/10 bg-white p-5">
+        <h3 className="font-display text-lg font-bold text-pitch">Durasi Pertandingan (Live Score)</h3>
+        <p className="mt-1 text-sm text-pitch/60">
+          Dipakai untuk menentukan kapan status pertandingan otomatis berubah dari "Live" ke selesai di tab
+          Live, dihitung sejak jam kick-off yang diisi di jadwal.
+        </p>
+        <div className="mt-3 flex items-center gap-2">
+          <input
+            type="number"
+            min="1"
+            disabled={!canEdit || busy}
+            value={durationMinutes}
+            onChange={(e) => updateDuration(e.target.value)}
+            className="w-24 rounded-lg border border-pitch/20 px-3 py-1.5 text-sm focus:border-gold focus:outline-none disabled:bg-chalk"
+          />
+          <span className="text-sm text-pitch/60">menit</span>
+        </div>
       </div>
 
       {knockoutStarted && (

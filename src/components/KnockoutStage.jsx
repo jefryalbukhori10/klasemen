@@ -1,14 +1,7 @@
 import ScoreInput from './ScoreInput'
-import { isDrawNeedingPenalty, matchWinnerId } from '../utils/tournamentLogic'
+import MatchEvents from './MatchEvents'
+import { isDrawNeedingPenalty, matchWinnerId, findTeamName } from '../utils/tournamentLogic'
 import { updateKnockoutField } from '../services/firestoreApi'
-
-function findTeamName(groups, id) {
-  for (const g of Object.keys(groups)) {
-    const found = (groups[g].teams ?? []).find((t) => t.id === id)
-    if (found) return found.name
-  }
-  return '???'
-}
 
 function MatchCard({ title, match, groups, docId, canEdit }) {
   if (!match) {
@@ -81,6 +74,39 @@ function MatchCard({ title, match, groups, docId, canEdit }) {
           </div>
         </div>
       )}
+
+      {canEdit ? (
+        <div className="mt-4 flex items-center justify-center gap-2 border-t border-pitch/5 pt-3">
+          <span className="text-xs text-pitch/40">Kick-off:</span>
+          <input
+            type="date"
+            value={match.date ?? ''}
+            onChange={(e) => update('date', e.target.value || null)}
+            className="rounded border border-pitch/20 bg-white px-2 py-1 text-xs text-pitch focus:border-gold focus:outline-none"
+          />
+          <input
+            type="time"
+            value={match.time ?? ''}
+            onChange={(e) => update('time', e.target.value || null)}
+            className="rounded border border-pitch/20 bg-white px-2 py-1 text-xs text-pitch focus:border-gold focus:outline-none"
+          />
+        </div>
+      ) : (
+        match.date && (
+          <p className="mt-3 text-center text-xs text-pitch/40">
+            Kick-off: {match.date} {match.time ?? ''}
+          </p>
+        )
+      )}
+
+      <MatchEvents
+        homeTeam={{ id: match.home, name: findTeamName(groups, match.home) }}
+        awayTeam={{ id: match.away, name: findTeamName(groups, match.away) }}
+        goals={match.goals}
+        cards={match.cards}
+        canEdit={canEdit}
+        onSave={(field, value) => updateKnockoutField(docId, field, value)}
+      />
     </div>
   )
 }

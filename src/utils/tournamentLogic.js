@@ -2,6 +2,16 @@
 export const uid = (prefix = 'id') =>
   `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`
 
+// Look up a team's display name given its id, searching across all groups.
+// `groups` is the { A: {teams:[...]}, B: {...}, C: {...} } object.
+export function findTeamName(groups, id) {
+  for (const g of Object.keys(groups)) {
+    const found = (groups[g].teams ?? []).find((t) => t.id === id)
+    if (found) return found.name
+  }
+  return '???'
+}
+
 function emptyStat(team) {
   return {
     id: team.id,

@@ -22,6 +22,8 @@ import Standings from './components/Standings'
 import GroupSchedule from './components/GroupSchedule'
 import KnockoutStage from './components/KnockoutStage'
 import TeamManager from './components/TeamManager'
+import LiveScores from './components/LiveScores'
+import TopScorers from './components/TopScorers'
 
 const GROUP_KEYS = ['A', 'B', 'C']
 
@@ -30,7 +32,7 @@ export default function App() {
   const [matches, setMatches] = useState(null)
   const [knockout, setKnockout] = useState(null)
   const [settings, setSettings] = useState(null)
-  const [tab, setTab] = useState('klasemen')
+  const [tab, setTab] = useState('live')
   const { user, isAdmin } = useAuth()
   const seedingInFlight = useRef(false)
   const finalInFlight = useRef(false)
@@ -170,11 +172,15 @@ export default function App() {
       <AuthBar user={user} />
       <Tabs active={tab} onChange={setTab} />
       <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
+        {tab === 'live' && (
+          <LiveScores groups={groups} matches={matches} knockout={knockout} settings={settings} />
+        )}
         {tab === 'klasemen' && <Standings groups={groups} matches={matches} criteria={criteria} />}
         {tab === 'jadwal' && <GroupSchedule groups={groups} matches={matches} canEdit={isAdmin} />}
         {tab === 'knockout' && (
           <KnockoutStage groups={groups} knockout={knockout} canEdit={isAdmin} />
         )}
+        {tab === 'topskor' && <TopScorers groups={groups} matches={matches} knockout={knockout} />}
         {tab === 'tim' && (
           <TeamManager
             groups={groups}

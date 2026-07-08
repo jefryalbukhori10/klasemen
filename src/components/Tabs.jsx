@@ -1,7 +1,9 @@
 const TABS = [
+  { key: 'live', label: 'Live' },
   { key: 'klasemen', label: 'Klasemen' },
   { key: 'jadwal', label: 'Jadwal Grup' },
   { key: 'knockout', label: 'Semifinal & Final' },
+  { key: 'topskor', label: 'Top Skor' },
   { key: 'tim', label: 'Kelola Tim' },
 ]
 
