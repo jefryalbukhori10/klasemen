@@ -4,6 +4,7 @@ const TABS = [
   { key: 'jadwal', label: 'Jadwal Grup' },
   { key: 'knockout', label: 'Semifinal & Final' },
   { key: 'topskor', label: 'Top Skor' },
+  { key: 'kartu', label: 'Kartu' },
   { key: 'tim', label: 'Kelola Tim' },
 ]
 

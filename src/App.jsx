@@ -24,6 +24,7 @@ import KnockoutStage from './components/KnockoutStage'
 import TeamManager from './components/TeamManager'
 import LiveScores from './components/LiveScores'
 import TopScorers from './components/TopScorers'
+import TeamCards from './components/TeamCards'
 
 const GROUP_KEYS = ['A', 'B', 'C']
 
@@ -181,6 +182,7 @@ export default function App() {
           <KnockoutStage groups={groups} knockout={knockout} canEdit={isAdmin} />
         )}
         {tab === 'topskor' && <TopScorers groups={groups} matches={matches} knockout={knockout} />}
+        {tab === 'kartu' && <TeamCards groups={groups} matches={matches} knockout={knockout} />}
         {tab === 'tim' && (
           <TeamManager
             groups={groups}
